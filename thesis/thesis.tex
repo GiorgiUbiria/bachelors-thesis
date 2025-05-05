@@ -1,0 +1,367 @@
+% Bachelor's Thesis Template
+\documentclass[12pt]{article}
+
+% Required packages
+\usepackage[utf8]{inputenc}
+\usepackage{times}  % Times New Roman font
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{apacite}
+\usepackage{enumitem}
+\usepackage{listings}  % For code listings
+\usepackage{booktabs}  % For better tables
+\usepackage{float}     % For better figure placement
+
+% Page geometry settings
+\geometry{
+    left=3cm,
+    right=1.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+% Line spacing
+\onehalfspacing
+
+% Title formatting
+\titleformat{\section}
+    {\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+% Code listing settings
+\lstset{
+    basicstyle=\small\ttfamily,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=5pt
+}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \begin{center}
+        \vspace*{2cm}
+        
+        \Huge
+        \textbf{Unsupervised Machine Learning: A Multi-Layered Framework for E-Commerce Security, Personalization, and Monitoring}
+        
+        \vspace{1.5cm}
+        
+        \Large
+        Bachelor's Thesis
+        
+        \vspace{2cm}
+        
+        \large
+        \textbf{Author:} [Your Name]\\
+        \textbf{Supervisor:} [Supervisor's Name]\\
+        \textbf{Program:} Computer Science\\
+        \textbf{Date:} \today
+        
+    \end{center}
+\end{titlepage}
+
+% Table of Contents
+\tableofcontents
+\newpage
+
+% Abstract/Annotation
+\section*{Abstract}
+This thesis presents a comprehensive framework for integrating unsupervised machine learning techniques into e-commerce platforms, focusing on three key areas: security, personalization, and monitoring. The research implements a multi-layered architecture combining a React frontend, Go backend, and Python-based machine learning service. The framework employs Isolation Forest for anomaly detection in incoming requests, K-means clustering for user behavior analysis, and collaborative filtering for product recommendations. The system demonstrates practical applications of traditional machine learning methods without relying on neural networks, emphasizing interpretability and real-time performance. The implementation includes automated model retraining, efficient caching mechanisms, and a robust monitoring system for operators. The research contributes to the field by providing a practical, production-ready solution that balances computational efficiency with accurate predictions.
+
+% Introduction
+\section{Introduction}
+The rapid growth of e-commerce platforms has created a pressing need for intelligent systems that can handle security threats, personalize user experiences, and monitor platform health. Traditional rule-based systems often fall short in addressing these challenges, particularly when dealing with sophisticated attacks or complex user behavior patterns. This thesis addresses these challenges through the implementation of unsupervised machine learning techniques in a production environment.
+
+\subsection{Problem Statement}
+Modern e-commerce platforms face three critical challenges:
+\begin{itemize}
+    \item Detecting and preventing security threats in real-time
+    \item Providing personalized user experiences based on behavior patterns
+    \item Monitoring and analyzing platform health and user activities
+\end{itemize}
+
+\subsection{Research Objectives}
+The primary objectives of this research are:
+\begin{itemize}
+    \item Develop a multi-layered architecture that integrates machine learning into e-commerce operations
+    \item Implement and evaluate unsupervised learning techniques for security, personalization, and monitoring
+    \item Create a practical framework that balances performance with interpretability
+    \item Demonstrate the effectiveness of traditional ML methods without neural networks
+\end{itemize}
+
+\subsection{Methodology}
+The research employs a practical approach by:
+\begin{itemize}
+    \item Building a complete e-commerce platform with React frontend and Go backend
+    \item Implementing Python-based ML services for various tasks
+    \item Using Docker for containerization and deployment
+    \item Conducting real-world testing with simulated attack scenarios
+\end{itemize}
+
+\subsection{Significance}
+This research contributes to the field by:
+\begin{itemize}
+    \item Providing a production-ready framework for ML integration in e-commerce
+    \item Demonstrating practical applications of unsupervised learning
+    \item Offering insights into balancing model complexity with interpretability
+    \item Establishing patterns for periodic model retraining and optimization
+\end{itemize}
+
+% Research Subject and Methods
+\section{Research Subject and Methods}
+This research focuses on implementing unsupervised machine learning techniques in a production e-commerce environment. The study employs a practical, implementation-based approach to demonstrate the effectiveness of traditional ML methods in real-world scenarios.
+
+\subsection{Research Subject}
+The primary subject of this research is a multi-layered e-commerce platform that integrates machine learning capabilities. The platform consists of three main components:
+\begin{itemize}
+    \item A React-based frontend for user interaction and operator monitoring
+    \item A Go-based backend API for business logic and data management
+    \item A Python-based machine learning service for real-time analysis and predictions
+\end{itemize}
+
+\subsection{Research Methods}
+The research employs several key methodologies:
+
+\subsubsection{System Architecture}
+The system is designed using a microservices architecture, with each component containerized using Docker. This approach ensures:
+\begin{itemize}
+    \item Scalability and maintainability
+    \item Clear separation of concerns
+    \item Easy deployment and updates
+    \item Efficient resource utilization
+\end{itemize}
+
+\subsubsection{Machine Learning Implementation}
+The research implements three core ML functionalities:
+
+\paragraph{Anomaly Detection}
+\begin{itemize}
+    \item Method: Isolation Forest
+    \item Features: Response time, request size, error count
+    \item Purpose: Real-time detection of suspicious activities
+    \item Implementation: Python-based service with periodic retraining
+\end{itemize}
+
+\paragraph{User Behavior Analysis}
+\begin{itemize}
+    \item Method: K-means Clustering
+    \item Features: Login frequency, purchase patterns, cart behavior
+    \item Purpose: User segmentation and behavior understanding
+    \item Implementation: Automated clustering with dynamic updates
+\end{itemize}
+
+\paragraph{Recommendation System}
+\begin{itemize}
+    \item Method: Collaborative Filtering
+    \item Features: Purchase history, user interactions
+    \item Purpose: Personalized product recommendations
+    \item Implementation: Item-based similarity with caching
+\end{itemize}
+
+\subsubsection{Data Collection and Processing}
+The research employs a comprehensive data collection strategy:
+\begin{itemize}
+    \item Real-time request logging
+    \item User activity tracking
+    \item Purchase history analysis
+    \item System performance monitoring
+\end{itemize}
+
+% Main Content
+\section{Main Content}
+
+\subsection{System Architecture and Implementation}
+\subsubsection{Frontend Implementation}
+The frontend is built using React and implements several key features:
+\begin{itemize}
+    \item User interface for shopping and account management
+    \item Operator dashboard for monitoring and analytics
+    \item Real-time updates using WebSocket connections
+    \item Responsive design for multiple device types
+\end{itemize}
+
+\subsubsection{Backend Implementation}
+The Go backend provides:
+\begin{itemize}
+    \item RESTful API endpoints for all operations
+    \item Database integration with PostgreSQL
+    \item Authentication and authorization
+    \item Request logging and monitoring
+\end{itemize}
+
+\subsubsection{Machine Learning Service}
+The ML service implements several key components:
+
+\paragraph{Model Management}
+\begin{itemize}
+    \item Automated model training and updates
+    \item Model versioning and persistence
+    \item Performance monitoring and optimization
+    \item Error handling and recovery
+\end{itemize}
+
+\paragraph{API Integration}
+\begin{itemize}
+    \item RESTful endpoints for predictions
+    \item Real-time analysis capabilities
+    \item Batch processing for training
+    \item Health monitoring and status reporting
+\end{itemize}
+
+\subsection{Security Implementation}
+\subsubsection{Anomaly Detection System}
+The anomaly detection system employs several layers of security:
+\begin{itemize}
+    \item Real-time request analysis
+    \item Pattern recognition for suspicious activities
+    \item Automated response mechanisms
+    \item Operator notification system
+\end{itemize}
+
+\subsubsection{Attack Simulation}
+The research includes a comprehensive attack simulation framework:
+\begin{itemize}
+    \item DDoS attack simulation
+    \item Brute force attempt simulation
+    \item SQL injection attempts
+    \item Session hijacking simulation
+\end{itemize}
+
+\subsection{Personalization System}
+\subsubsection{User Behavior Analysis}
+The system implements sophisticated user behavior analysis:
+\begin{itemize}
+    \item Real-time tracking of user interactions
+    \item Pattern recognition in browsing behavior
+    \item Purchase history analysis
+    \item Session-based activity monitoring
+\end{itemize}
+
+\subsubsection{Recommendation Engine}
+The recommendation system employs several strategies:
+\begin{itemize}
+    \item Collaborative filtering based on user similarities
+    \item Item-based recommendations using cosine similarity
+    \item Real-time updates based on user actions
+    \item Caching mechanisms for performance optimization
+\end{itemize}
+
+\subsubsection{Performance Optimization}
+The personalization system includes several optimization features:
+\begin{itemize}
+    \item Efficient data structures for quick lookups
+    \item Caching of frequently accessed recommendations
+    \item Batch processing for model updates
+    \item Asynchronous processing for non-critical updates
+\end{itemize}
+
+\subsection{Monitoring and Analytics}
+\subsubsection{Real-time Monitoring}
+The system provides comprehensive monitoring capabilities:
+\begin{itemize}
+    \item Request rate monitoring
+    \item Response time tracking
+    \item Error rate analysis
+    \item Resource utilization metrics
+\end{itemize}
+
+\subsubsection{Analytics Dashboard}
+The operator dashboard includes:
+\begin{itemize}
+    \item Real-time system health metrics
+    \item User activity visualization
+    \item Security incident reporting
+    \item Performance trend analysis
+\end{itemize}
+
+\subsubsection{Automated Actions}
+The system implements automated responses to various scenarios:
+\begin{itemize}
+    \item Automatic IP blocking for suspicious activities
+    \item Rate limiting for potential DDoS attacks
+    \item Session termination for suspicious behavior
+    \item Alert generation for operator attention
+\end{itemize}
+
+\subsection{Model Training and Optimization}
+\subsubsection{Training Pipeline}
+The system implements an automated training pipeline:
+\begin{itemize}
+    \item Periodic model retraining
+    \item Performance evaluation metrics
+    \item Model versioning and rollback
+    \item Training data management
+\end{itemize}
+
+\subsubsection{Performance Metrics}
+The system tracks various performance indicators:
+\begin{itemize}
+    \item Model accuracy and precision
+    \item Response time and latency
+    \item Resource utilization
+    \item False positive/negative rates
+\end{itemize}
+
+\subsubsection{Optimization Strategies}
+Several optimization techniques are employed:
+\begin{itemize}
+    \item Feature selection and engineering
+    \item Hyperparameter tuning
+    \item Model pruning and simplification
+    \item Caching and precomputation
+\end{itemize}
+
+% Conclusion
+\section{Conclusion}
+This research demonstrates the successful implementation of unsupervised machine learning techniques in a production e-commerce environment. The developed framework provides a comprehensive solution for security, personalization, and monitoring challenges faced by modern e-commerce platforms.
+
+\subsection{Key Achievements}
+The research has achieved several significant milestones:
+\begin{itemize}
+    \item Successful implementation of a multi-layered architecture integrating ML capabilities
+    \item Development of effective anomaly detection using Isolation Forest
+    \item Implementation of user behavior analysis through K-means clustering
+    \item Creation of an efficient recommendation system using collaborative filtering
+    \item Establishment of automated model training and optimization processes
+\end{itemize}
+
+\subsection{Research Contributions}
+The main contributions of this research include:
+\begin{itemize}
+    \item A practical framework for integrating ML in e-commerce platforms
+    \item Novel approaches to real-time security monitoring
+    \item Efficient methods for user behavior analysis
+    \item Optimized recommendation system implementation
+    \item Automated model management and training processes
+\end{itemize}
+
+\subsection{Future Work}
+Several areas for future research and improvement have been identified:
+\begin{itemize}
+    \item Integration of more sophisticated feature engineering techniques
+    \item Development of hybrid recommendation approaches
+    \item Enhancement of real-time processing capabilities
+    \item Implementation of more advanced security measures
+    \item Exploration of additional optimization strategies
+\end{itemize}
+
+\subsection{Final Remarks}
+This research demonstrates that traditional machine learning methods, when properly implemented and optimized, can provide effective solutions for e-commerce challenges without relying on neural networks. The developed framework offers a practical, production-ready solution that balances performance, interpretability, and maintainability.
+
+% References
+\section{References}
+[Your references should be in APA style and organized alphabetically, with Georgian publications first, followed by foreign language publications.]
+
+% Example of how to cite using APA style
+% \bibliographystyle{apacite}
+% \bibliography{references}
+
+\end{document}

@@ -1,0 +1,1 @@
+# Centralized config (e.g., file paths, model params)

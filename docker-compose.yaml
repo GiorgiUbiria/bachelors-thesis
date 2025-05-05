@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: react-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: fiber-api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=ecommerce
+      - DB_PORT=5432
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  ml:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    container_name: ml-service
+    ports:
+      - "5000:5000"
+    environment:
+      - API_URL=http://api:8080
+      - MODEL_DIR=/app/models
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - TRAINING_INTERVAL=3600
+      - ANOMALY_CONTAMINATION=0.1
+      - USER_CLUSTERS=5
+    volumes:
+      - ml_models:/app/models
+    depends_on:
+      - api
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ecommerce
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  ml_models:
+
+networks:
+  app-network:
+    driver: bridge
