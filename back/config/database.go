@@ -7,14 +7,19 @@ import (
 	"time"
 
 	"github.com/GiorgiUbiria/bachelor/models"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
 
 func InitDB() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file, using environment variables")
+	}
+
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
@@ -23,46 +28,67 @@ func InitDB() {
 		os.Getenv("DB_PORT"),
 	)
 
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags),
-		logger.Config{
-			SlowThreshold:             time.Second,
-			LogLevel:                  logger.Info,
-			IgnoreRecordNotFoundError: true,
-			Colorful:                  true,
-		},
-	)
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: newLogger,
-	})
+	// Try to connect to the database
+	var db *gorm.DB
+	maxRetries := 5
+	for i := 0; i < maxRetries; i++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		}
+		log.Printf("Failed to connect to database (attempt %d/%d): %v", i+1, maxRetries, err)
+		if i < maxRetries-1 {
+			// Wait for 2 seconds before retrying
+			time.Sleep(2 * time.Second)
+		}
+	}
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		log.Fatal("Failed to connect to database after multiple attempts:", err)
 	}
 
-	// Auto migrate the schema
-	err = db.AutoMigrate(
+	DB = db
+
+	// Drop all tables if they exist (for development)
+	if os.Getenv("ENV") == "development" {
+		log.Println("Dropping all tables...")
+		DB.Migrator().DropTable(
+			&models.User{},
+			&models.Product{},
+			&models.Order{},
+			&models.OrderItem{},
+			&models.Cart{},
+			&models.CartItem{},
+			&models.Favorite{},
+			&models.UserActivity{},
+			&models.RequestLog{},
+		)
+	}
+
+	// Run migrations
+	err = DB.AutoMigrate(
 		&models.User{},
 		&models.Product{},
 		&models.Order{},
 		&models.OrderItem{},
-		&models.UserActivity{},
-		&models.Favorite{},
 		&models.Cart{},
 		&models.CartItem{},
+		&models.Favorite{},
+		&models.UserActivity{},
 		&models.RequestLog{},
 	)
 	if err != nil {
-		log.Fatal("Failed to migrate database:", err)
+		log.Fatal("Failed to run migrations:", err)
 	}
 
-	DB = db
+	log.Println("Database migrations completed successfully")
 
 	// Seed the database if it's empty
 	var count int64
 	DB.Model(&models.User{}).Count(&count)
 	if count == 0 {
+		log.Println("Seeding database...")
 		SeedDatabase()
+		log.Println("Database seeding completed")
 	}
 }
 

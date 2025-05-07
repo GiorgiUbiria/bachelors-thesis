@@ -17,9 +17,10 @@ func SeedDatabase() {
 	// Create admin user
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
 	admin := models.User{
-		Username: "admin",
+		Name:     "Admin User",
 		Email:    "admin@example.com",
 		Password: string(hashedPassword),
+		Role:     "admin",
 	}
 	DB.Create(&admin)
 
@@ -28,9 +29,10 @@ func SeedDatabase() {
 	for i := 1; i <= 10; i++ {
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("user123"), bcrypt.DefaultCost)
 		user := models.User{
-			Username: "user" + string(rune('0'+i)),
+			Name:     "User " + string(rune('0'+i)),
 			Email:    "user" + string(rune('0'+i)) + "@example.com",
 			Password: string(hashedPassword),
+			Role:     "user",
 		}
 		DB.Create(&user)
 		users = append(users, user)

@@ -1,13 +1,39 @@
 package routes
 
 import (
+	"github.com/GiorgiUbiria/bachelor/middleware"
 	"github.com/GiorgiUbiria/bachelor/routes/handlers"
 	"github.com/gofiber/fiber/v3"
+	"gorm.io/gorm"
 )
 
-func SetupRoutes(app *fiber.App) {
-	// API group
-	api := app.Group("/api")
+func SetupRoutes(app *fiber.App, db *gorm.DB) {
+	// Auth routes
+	auth := app.Group("/api/auth")
+	auth.Post("/login", func(c fiber.Ctx) error {
+		return handlers.Login(c, db)
+	})
+	auth.Post("/register", func(c fiber.Ctx) error {
+		return handlers.Register(c, db)
+	})
+
+	// Protected routes
+	api := app.Group("/api", middleware.Protected())
+
+	// Admin routes
+	admin := api.Group("/admin", middleware.AdminOnly())
+	admin.Get("/dashboard", func(c fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"message": "Admin dashboard",
+		})
+	})
+
+	// User routes
+	user := api.Group("/user")
+	user.Get("/profile", func(c fiber.Ctx) error {
+		user := c.Locals("user")
+		return c.JSON(user)
+	})
 
 	// Product routes
 	products := api.Group("/products")
