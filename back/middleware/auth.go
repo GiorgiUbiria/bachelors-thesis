@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"os"
 	"strings"
 
 	"github.com/GiorgiUbiria/bachelor/models"
@@ -8,6 +9,14 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 )
+
+func getJWTSecret() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		secret = "your-secret-key"
+	}
+	return []byte(secret)
+}
 
 func Protected() fiber.Handler {
 	return func(c fiber.Ctx) error {
@@ -18,19 +27,16 @@ func Protected() fiber.Handler {
 			})
 		}
 
-		// Check if the header has the Bearer prefix
 		if !strings.HasPrefix(authHeader, "Bearer ") {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "Invalid authorization header format",
 			})
 		}
 
-		// Extract the token
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-		// Parse and validate the token
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return []byte("your-secret-key"), nil // TODO: Move to env
+			return getJWTSecret(), nil
 		})
 
 		if err != nil || !token.Valid {
@@ -39,7 +45,6 @@ func Protected() fiber.Handler {
 			})
 		}
 
-		// Extract claims
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -47,7 +52,6 @@ func Protected() fiber.Handler {
 			})
 		}
 
-		// Set user info in context
 		user := models.User{
 			Model: gorm.Model{
 				ID: uint(claims["user_id"].(float64)),

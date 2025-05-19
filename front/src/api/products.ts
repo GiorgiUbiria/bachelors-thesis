@@ -1,41 +1,30 @@
-import axios from 'axios';
 import { type Product, ProductCategory } from '../types/product';
+import { API_ENDPOINTS } from '../config/api';
+import api from '../utils/axiosSetup';
 
-const API_URL = 'http://localhost:8080/api';
-
-// Get all products
 export const getProducts = async (): Promise<Product[]> => {
   try {
-    const response = await axios.get(`${API_URL}/products`);
+    const response = await api.get(API_ENDPOINTS.PRODUCTS.LIST);
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw error;
-    }
-    throw new Error('Failed to fetch products');
+    throw error;
   }
 };
 
-// Get a single product by ID
 export const getProduct = async (id: number): Promise<Product> => {
   try {
-    const response = await axios.get(`${API_URL}/products/${id}`);
+    const response = await api.get(API_ENDPOINTS.PRODUCTS.DETAIL(id));
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw error;
-    }
-    throw new Error('Failed to fetch product');
+    throw error;
   }
 };
 
-// Get products by category
 export const getProductsByCategory = async (category: ProductCategory): Promise<Product[]> => {
-  const response = await axios.get(`${API_URL}/products/category/${category}`);
+  const response = await api.get(API_ENDPOINTS.PRODUCTS.CATEGORY(category));
   return response.data;
 };
 
-// Get popular products
 export const getPopularProducts = async (timeRange: '24h' | '7d' | '30d' = '24h'): Promise<{
   time_range: string;
   products: Array<{
@@ -43,26 +32,21 @@ export const getPopularProducts = async (timeRange: '24h' | '7d' | '30d' = '24h'
     views: number;
   }>;
 }> => {
-  const response = await axios.get(`${API_URL}/analytics/products/popular?timeRange=${timeRange}`);
+  const response = await api.get(`${API_ENDPOINTS.ANALYTICS.POPULAR_PRODUCTS}?timeRange=${timeRange}`);
   return response.data;
 };
 
-// Search products
 export const searchProducts = async (query: string): Promise<Product[]> => {
   try {
-    const response = await axios.get(`${API_URL}/products/search`, {
+    const response = await api.get(API_ENDPOINTS.PRODUCTS.SEARCH, {
       params: { query }
     });
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw error;
-    }
-    throw new Error('Failed to search products');
+    throw error;
   }
 };
 
-// Error handling wrapper
 export const handleProductError = (error: any): never => {
   if (error.response) {
     throw new Error(error.response.data.error || 'Failed to fetch products');

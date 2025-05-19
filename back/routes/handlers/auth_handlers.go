@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"os"
 	"time"
 
 	"github.com/GiorgiUbiria/bachelor/models"
@@ -24,6 +25,14 @@ type RegisterRequest struct {
 type AuthResponse struct {
 	Token string      `json:"token"`
 	User  models.User `json:"user"`
+}
+
+func getJWTSecret() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		secret = "your-secret-key"
+	}
+	return []byte(secret)
 }
 
 func Login(c fiber.Ctx, db *gorm.DB) error {
@@ -54,7 +63,7 @@ func Login(c fiber.Ctx, db *gorm.DB) error {
 		"exp":     time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte("your-secret-key")) // TODO: Move to env
+	tokenString, err := token.SignedString(getJWTSecret())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Could not generate token",
@@ -75,7 +84,6 @@ func Register(c fiber.Ctx, db *gorm.DB) error {
 		})
 	}
 
-	// Check if user already exists
 	var existingUser models.User
 	if err := db.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
 		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
@@ -83,7 +91,6 @@ func Register(c fiber.Ctx, db *gorm.DB) error {
 		})
 	}
 
-	// Hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -95,7 +102,7 @@ func Register(c fiber.Ctx, db *gorm.DB) error {
 		Email:    req.Email,
 		Password: string(hashedPassword),
 		Name:     req.Name,
-		Role:     "user", // Default role
+		Role:     "user",
 	}
 
 	if err := db.Create(&user).Error; err != nil {
@@ -111,7 +118,7 @@ func Register(c fiber.Ctx, db *gorm.DB) error {
 		"exp":     time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte("your-secret-key")) // TODO: Move to env
+	tokenString, err := token.SignedString(getJWTSecret())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Could not generate token",
