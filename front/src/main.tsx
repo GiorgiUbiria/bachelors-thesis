@@ -5,6 +5,8 @@ import {
 
 import ReactDOM from "react-dom/client";
 
+import "./index.css";
+
 // Import your actual components here
 import MainLayout from "./components/MainLayout";
 import Home from "./pages/Home";

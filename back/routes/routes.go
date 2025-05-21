@@ -59,4 +59,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	analytics.Get("/requests", handlers.GetRequestAnalytics)
 	analytics.Get("/products/popular", handlers.GetPopularProducts)
 	analytics.Get("/users/active", handlers.GetActiveUsers)
+
+	// Anomaly detection log endpoint
+	api.Post("/log-request", handlers.LogRequestHandler)
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/GiorgiUbiria/bachelor/config"
+	"github.com/GiorgiUbiria/bachelor/middleware"
 	"github.com/GiorgiUbiria/bachelor/routes"
 	"github.com/GiorgiUbiria/bachelor/routes/handlers"
 	"github.com/gofiber/fiber/v3"
@@ -35,6 +36,8 @@ func main() {
 			})
 		},
 	})
+
+	app.Use(middleware.RequestTimer())
 
 	app.Use(logger.New())
 

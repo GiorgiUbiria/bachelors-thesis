@@ -12,6 +12,8 @@ services:
       - api
     networks:
       - app-network
+    environment:
+      - WATCHPACK_POLLING=true
     restart: unless-stopped
 
   api:

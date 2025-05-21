@@ -1,68 +1,54 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
+@import "tailwindcss/preflight";
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  html, body {
+    @apply min-h-screen bg-black antialiased text-gray-100;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #18181b 0%, #27272a 60%, #a259ff22 100%);
   }
-  a:hover {
-    color: #747bff;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-extrabold text-gray-100;
+    letter-spacing: -0.01em;
   }
-  button {
-    background-color: #f9f9f9;
+  h1 {
+    @apply text-4xl mb-6;
   }
+  h2 {
+    @apply text-2xl mb-4;
+  }
+  a {
+    @apply text-purple-400 underline hover:text-purple-300 transition-colors duration-200 font-semibold;
+  }
+  ul {
+    @apply list-disc list-inside;
+  }
+}
+
+/* Purple glow utility */
+.purple-glow {
+  box-shadow: 0 0 16px 2px #a259ff, 0 0 32px 4px #a259ff33;
+}
+
+/* Card utility for main content */
+.card-soft {
+  @apply bg-zinc-900/90 rounded-3xl shadow-2xl border border-purple-900;
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+  background: #18181b;
+}
+::-webkit-scrollbar-thumb {
+  background: #a259ff;
+  border-radius: 4px;
+}
+
+/* Smooth transitions for interactive elements */
+button, a, .purple-glow {
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
 }
