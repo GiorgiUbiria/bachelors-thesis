@@ -41,6 +41,8 @@ func main() {
 
 	app.Use(logger.New())
 
+	app.Use(middleware.RequestLoggerAndAnomaly())
+
 	allowOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowOrigins == "" {
 		allowOrigins = "http://localhost:3000,http://localhost:5173"

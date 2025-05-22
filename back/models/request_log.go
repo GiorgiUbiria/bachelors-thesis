@@ -22,3 +22,12 @@ type RequestLog struct {
 	Details      string         `json:"details"`               // Additional request details
 	ResponseTime float64        `json:"response_time"`         // Response time in milliseconds
 }
+
+// BannedIP represents a banned IP address
+type BannedIP struct {
+	ID          uint      `gorm:"primarykey" json:"id"`
+	IP          string    `gorm:"uniqueIndex" json:"ip"`
+	BannedUntil time.Time `json:"banned_until"`
+	Reason      string    `json:"reason"`
+	CreatedAt   time.Time `json:"created_at"`
+}

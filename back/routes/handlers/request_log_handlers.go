@@ -8,6 +8,7 @@ import (
 	"github.com/GiorgiUbiria/bachelor/models"
 	"github.com/GiorgiUbiria/bachelor/services"
 	"github.com/gofiber/fiber/v3"
+	"gorm.io/gorm/clause"
 )
 
 // Extract features from the request for anomaly detection
@@ -50,19 +51,45 @@ func methodToFloat64(method string) float64 {
 	}
 }
 
+// Helper to check if IP is banned
+func isIPBanned(ip string) (bool, time.Time) {
+	var ban models.BannedIP
+	result := config.DB.Where("ip = ? AND banned_until > ?", ip, time.Now()).First(&ban)
+	if result.Error == nil {
+		return true, ban.BannedUntil
+	}
+	return false, time.Time{}
+}
+
 // LogRequestHandler logs a request and runs anomaly detection
 func LogRequestHandler(c fiber.Ctx) error {
+	ip := c.IP()
+	if banned, until := isIPBanned(ip); banned {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error":        "IP banned",
+			"banned_until": until,
+		})
+	}
+
 	features := extractRequestFeatures(c)
 	prediction, err := services.DetectAnomaly([][]float64{features})
 	category := "normal"
 	if err == nil && prediction == -1 {
 		category = "anomaly"
-		// Optionally: trigger auto-action, e.g., block IP
+		// Preemptive action: ban IP for 1 hour
+		ban := models.BannedIP{
+			IP:          ip,
+			BannedUntil: time.Now().Add(1 * time.Hour),
+			Reason:      "Anomaly detected",
+			CreatedAt:   time.Now(),
+		}
+		config.DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&ban)
+		// TODO: Notify admin (placeholder)
 	}
 
 	// Save to DB
 	log := models.RequestLog{
-		IP:           c.IP(),
+		IP:           ip,
 		Method:       c.Method(),
 		Path:         c.Path(),
 		Status:       c.Response().StatusCode(),

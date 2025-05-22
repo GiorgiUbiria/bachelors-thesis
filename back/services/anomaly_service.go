@@ -17,7 +17,7 @@ type AnomalyPredictResponse struct {
 
 var AnomalyAPIURL = "http://localhost:5000/predict" // Set to your Python API URL
 
-func DetectAnomaly(features [][]float64) (int, error) {
+var DetectAnomaly = func(features [][]float64) (int, error) {
 	requestBody, err := json.Marshal(AnomalyPredictRequest{Features: features})
 	if err != nil {
 		return 0, err

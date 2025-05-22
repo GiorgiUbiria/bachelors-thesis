@@ -61,6 +61,7 @@ func InitDB() {
 			&models.Favorite{},
 			&models.UserActivity{},
 			&models.RequestLog{},
+			&models.BannedIP{},
 		)
 	}
 
@@ -75,6 +76,7 @@ func InitDB() {
 		&models.Favorite{},
 		&models.UserActivity{},
 		&models.RequestLog{},
+		&models.BannedIP{},
 	)
 	if err != nil {
 		log.Fatal("Failed to run migrations:", err)

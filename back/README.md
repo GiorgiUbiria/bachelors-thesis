@@ -1,6 +1,6 @@
 # Bachelor Backend API
 
-A Go-based REST API using Fiber v3 framework for the Bachelor project. This API provides endpoints for user management, product catalog, cart operations, and analytics.
+A Go-based REST API using Fiber v3 framework for the Bachelor project. This API provides endpoints for user management, product catalog, cart operations, analytics, and advanced request analysis with ML integration.
 
 ## 🚀 Quick Start
 
@@ -50,41 +50,45 @@ go run main.go
 
 The server will start at `http://localhost:8080` (or your configured APP_PORT).
 
-## 🔒 Authentication
+## 🛡️ Request Analysis & Security Workflow
 
-The API uses JWT (JSON Web Token) for authentication. Protected routes require a valid JWT token in the Authorization header.
+- **All incoming requests** are logged and analyzed by the backend.
+- **Features** are extracted and sent to the ML service for anomaly detection.
+- **Anomalous requests** are flagged and the IP is automatically banned for a period.
+- **All requests** are available for analytics and operator review in the dashboard.
+- **Automated Go tests** and a **Python attack simulation script** ensure the workflow is robust.
 
-### Token Format
-```
-Authorization: Bearer <your-jwt-token>
-```
+## 🧪 Automated Testing & Attack Simulation
 
-## 🛡️ CSRF Protection
+### Backend Unit/Integration Tests
+- Located in `routes/handlers/request_log_handlers_test.go`
+- **How to run:**
+  ```bash
+  go test ./routes/handlers
+  ```
+- **Covers:**
+  - Normal request logging
+  - Anomaly detection and IP banning
+  - Banned IP cannot make requests
+  - Analytics endpoint returns correct data
 
-The API implements CSRF protection for all non-GET requests. Clients must:
+### Attack Simulation Script
+- Located at `../ml/simulation/attack_simulation.py`
+- **How to run:**
+  ```bash
+  cd ../ml/simulation
+  pip install requests
+  python attack_simulation.py
+  ```
+- **What it does:**
+  - Simulates normal, rapid, and anomalous requests
+  - Demonstrates anomaly detection and IP banning
+  - Prints results for each step
 
-1. Get a CSRF token from `/api/csrf-token` (GET request)
-2. Include the token in the `X-Csrf-Token` header for all POST/PUT/PATCH/DELETE requests
-
-Example:
-```javascript
-// Get CSRF token
-const response = await fetch('http://localhost:8080/api/csrf-token', {
-  credentials: 'include'
-});
-const { csrfToken } = await response.json();
-
-// Use token in subsequent requests
-await fetch('http://localhost:8080/api/products', {
-  method: 'POST',
-  credentials: 'include',
-  headers: {
-    'X-Csrf-Token': csrfToken,
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(data)
-});
-```
+## 📈 Interpreting Results
+- **Test output**: Go test output will show pass/fail for each scenario.
+- **Simulation output**: Python script prints request results and ban status.
+- **Dashboard**: View real-time request logs and anomalies in the operator dashboard (Frontend > Analytics > Requests).
 
 ## 📚 API Endpoints
 
@@ -118,6 +122,7 @@ await fetch('http://localhost:8080/api/products', {
 ### Analytics (Admin only)
 - `GET /api/analytics/activities` - Get activity analytics
 - `GET /api/analytics/requests` - Get request analytics
+- `GET /api/analytics/requests/recent` - Get recent request logs
 - `GET /api/analytics/products/popular` - Get popular products
 - `GET /api/analytics/users/active` - Get active users
 

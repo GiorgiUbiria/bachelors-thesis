@@ -57,6 +57,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	analytics := api.Group("/analytics")
 	analytics.Get("/activities", handlers.GetActivityAnalytics)
 	analytics.Get("/requests", handlers.GetRequestAnalytics)
+	analytics.Get("/requests/recent", handlers.GetRecentRequestLogs)
 	analytics.Get("/products/popular", handlers.GetPopularProducts)
 	analytics.Get("/users/active", handlers.GetActiveUsers)
 

@@ -27,6 +27,7 @@ A modern e-commerce platform that leverages machine learning for security, perso
   - Product management
   - Event tracking
   - Request categorization
+  - **Automated and integration tests for request analysis**
 
 - **ML Service**: Python-based
   - Anomaly detection
@@ -101,6 +102,47 @@ The project implements several ML models:
 4. **Trend Analysis**
    - Time series analysis
    - Seasonal trend prediction
+
+## 🛡️ Request Analysis & Security Workflow
+
+- **All incoming requests** are logged and analyzed by the backend.
+- **Features** are extracted and sent to the ML service for anomaly detection.
+- **Anomalous requests** are flagged and the IP is automatically banned for a period.
+- **All requests** are available for analytics and operator review in the dashboard.
+- **Automated Go tests** and a **Python attack simulation script** ensure the workflow is robust.
+
+## 🧪 Automated Testing & Attack Simulation
+
+### Backend Unit/Integration Tests
+- Located in `back/routes/handlers/request_log_handlers_test.go`
+- **How to run:**
+  ```bash
+  cd back
+  go test ./routes/handlers
+  ```
+- **Covers:**
+  - Normal request logging
+  - Anomaly detection and IP banning
+  - Banned IP cannot make requests
+  - Analytics endpoint returns correct data
+
+### Attack Simulation Script
+- Located at `ml/simulation/attack_simulation.py`
+- **How to run:**
+  ```bash
+  cd ml/simulation
+  pip install requests
+  python attack_simulation.py
+  ```
+- **What it does:**
+  - Simulates normal, rapid, and anomalous requests
+  - Demonstrates anomaly detection and IP banning
+  - Prints results for each step
+
+## 📈 Interpreting Results
+- **Test output**: Go test output will show pass/fail for each scenario.
+- **Simulation output**: Python script prints request results and ban status.
+- **Dashboard**: View real-time request logs and anomalies in the operator dashboard (Frontend > Analytics > Requests).
 
 ## 📝 Documentation
 

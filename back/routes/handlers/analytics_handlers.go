@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/GiorgiUbiria/bachelor/config"
@@ -214,4 +215,25 @@ func GetActiveUsers(c fiber.Ctx) error {
 		"time_range": timeRange,
 		"users":      topUsers,
 	})
+}
+
+// GetRecentRequestLogs returns the latest N request logs, optionally filtered by category
+func GetRecentRequestLogs(c fiber.Ctx) error {
+	var logs []models.RequestLog
+	limit := 50
+	if l := c.Query("limit"); l != "" {
+		fmt.Sscanf(l, "%d", &limit)
+	}
+	category := c.Query("category")
+	query := config.DB.Order("created_at desc").Limit(limit)
+	if category != "" {
+		query = query.Where("category = ?", category)
+	}
+	result := query.Find(&logs)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to fetch request logs",
+		})
+	}
+	return c.JSON(logs)
 }
