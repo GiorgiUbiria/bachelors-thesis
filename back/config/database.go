@@ -54,6 +54,7 @@ func InitDB() {
 		DB.Migrator().DropTable(
 			&models.User{},
 			&models.Product{},
+			&models.Category{},
 			&models.Order{},
 			&models.OrderItem{},
 			&models.Cart{},
@@ -62,12 +63,18 @@ func InitDB() {
 			&models.UserActivity{},
 			&models.RequestLog{},
 			&models.BannedIP{},
+			&models.Review{},
+			&models.ReviewHelpful{},
+			&models.ReviewReport{},
+			&models.Payment{},
+			&models.PaymentAttempt{},
 		)
 	}
 
 	// Run migrations
 	err = DB.AutoMigrate(
 		&models.User{},
+		&models.Category{},
 		&models.Product{},
 		&models.Order{},
 		&models.OrderItem{},
@@ -77,6 +84,11 @@ func InitDB() {
 		&models.UserActivity{},
 		&models.RequestLog{},
 		&models.BannedIP{},
+		&models.Review{},
+		&models.ReviewHelpful{},
+		&models.ReviewReport{},
+		&models.Payment{},
+		&models.PaymentAttempt{},
 	)
 	if err != nil {
 		log.Fatal("Failed to run migrations:", err)
