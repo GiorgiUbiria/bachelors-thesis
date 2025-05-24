@@ -188,3 +188,8 @@ LLC.
 11.3. The regulation shall enter into force upon the entry into force of the rector's order;
 11.4. Any type of changes and additions to the regulations are approved based on the Rector's order.
 11.5. The vice-rector for education supervises the implementation of the regulations.
+
+
+## Additional Notes
+
+1. Make sure that the thesis can pass Plagiarism test and AI checker tests, meaning that it should be humane and not depend on external text too much.
